@@ -1,0 +1,91 @@
+* {
+    font-family: 'Avenir Next';
+}
+
+body {
+    background-color: rgb(253, 218, 215);
+    background-image: url("/static/confetti.png");
+    background-repeat: both;
+    
+}
+#top {
+    padding: 4vw;
+}
+#panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 250px;
+    width: 100%;
+}
+#curve {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+#logo {
+    height: 60px;
+    margin-bottom: 20px;
+}
+#current {
+    color: #252525;
+    font-size: 5vw;
+    width: 100%;
+    text-align: center;
+    padding: 0;
+    margin: 0 auto;
+    max-width: 1000px;
+    line-height: 100px;
+}
+#ongoing {
+    font-size: 2vw;
+    color: #969696;
+    width: 100%;
+    text-align: center;
+    padding: 0;
+    padding-top: 15px;
+    margin: 0;
+}
+#description {
+    font-size: 1.5vw;
+    color: #969696;
+    width: 100%;
+    text-align: center;
+    padding-top: 40px;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+#upcoming-label {
+    color: white;
+    bottom: 5vw;
+    position: absolute;
+    font-size: 2.2vw;
+    left: 3vw;
+}
+#upcoming {
+    color: white;
+    font-size: 3vw;
+    position: absolute;
+    bottom: 2.5vw;
+    padding: 0;
+    margin: 0;
+    left: 3vw;
+}
+#date {
+    position: absolute;
+    bottom: 2.5vw;
+    right: 4vw;
+    color:white;
+    font-size: 2.2vw;
+    padding: 0;
+    margin: 0;
+}
+#time {
+    position: absolute;
+    bottom: 5vw;
+    right: 4vw;
+    color:white;
+    font-size: 4vw;
+    padding: 0;
+    margin: 0;
+}

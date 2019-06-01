@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Event Announcer > CodeDay</title>
+    <link rel="icon" href="codeday.png">
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+    <div id="top">
+        <img id="logo" src="codeday.png">
+        <h1 id="current">...</h1>
+        <h3 id="ongoing">Ongoing right now</h3>
+        <p id="description">...</p>
+    </div>
+    <div id="panel">
+        <img src="curve.svg" id="curve">
+        <h1 id="upcoming-label">Upcoming:</h1>
+        <h1 id="upcoming">...</h1>
+
+        <h1 id="date">...</h1>
+        <h1 id="time">...</h1>
+    </div>
+    <p></p>
+    <script>
+        let date = new Date("May 25, 2019 14:00:00");
+        let today = `${getDayString(date.getDay())}, ${getMonthString(date.getMonth())} ${date.getDate()}`;
+        let tomorrow = "Sunday, May 26";
+        let events = []
+
+        fetch("https://cors-anywhere.herokuapp.com/" + "http://www.codeday.org/sandiego/schedule.json")
+        .then(function(r) {return r.json();})
+        .then(function(json) {
+            if (json[today] == undefined) return;
+            let schedule = json[today];
+            for (let i = 0; i < schedule.length; i++) {
+                let event = {
+                    "name": schedule[i]["title"],
+                    "description": schedule[i]["description"],
+                    "start": new Date(schedule[i]["timestamp"]["date"])
+                }
+                events.push(event);
+                console.log("Pushed new event.")
+            }
+            console.log(tomorrow)
+            schedule = json[tomorrow];
+            for (let i = 0; i < schedule.length; i++) {
+                let event = {
+                    "name": schedule[i]["title"],
+                    "description": schedule[i]["description"],
+                    "start": new Date(schedule[i]["timestamp"]["date"])
+                }
+                events.push(event);
+                console.log("Pushed new event.")
+            }
+        });
+
+        window.setInterval(function(){
+            date = new Date("May 26, 2019 8:00:00");
+            today = `${getDayString(date.getDay())}, ${getMonthString(date.getMonth())} ${date.getDate()}`;
+            ongoing = []
+            events.forEach(function(event) {
+                let minutes = Math.floor(((date - new Date(event["start"])) / 1000) / 60);
+                if (minutes <= 29 && minutes >= 0) {
+                    ongoing.push(event);
+                }
+            })
+            document.getElementById("time").innerHTML = getTimeAMPM(date);
+            document.getElementById("date").innerHTML = today;
+            if (ongoing.length == 0) {
+                document.getElementById("current").innerHTML = "Nothing going on right now.";
+                document.getElementById("description").innerHTML = "Keep on coding!";
+                let future = []
+                events.forEach(function(event) {
+                    if (new Date(event["start"]) > date) {
+                        console.log(event["name"]);
+                        future.push(event);
+                    }
+                });
+                document.getElementById("upcoming").innerHTML = future[0]["name"] + " at " + getTimeAMPM(new Date(future[0]["start"]));
+            }
+            else {
+                document.getElementById("current").innerHTML = ongoing[ongoing.length - 1]["name"];
+                document.getElementById("description").innerHTML = ongoing[ongoing.length - 1]["description"];
+                document.getElementById("upcoming").innerHTML = events[Math.min(events.length - 1, ongoing.length)]["name"] + " at " + getTimeAMPM(new Date(ongoing[0]["start"]));;
+                console.log(ongoing)
+            }
+            
+        }, 5000);
+       
+        function getDayString(index) {
+            return ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][index];
+        }
+        function getMonthString(index) {
+            return ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][index];
+        }
+        function getTimeAMPM(date) {
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+            var ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            minutes = minutes < 10 ? '0'+minutes : minutes;
+            var strTime = hours + ':' + minutes + ' ' + ampm;
+            return strTime;
+        }
+        Date.prototype.addHours= function(h){
+            this.setHours(this.getHours() + h);
+            return this;
+        }
+
+
+        //let today = getDayString(date.getDay()) + ", " + getMonthString(date.getMonth()) + " " + date.getDate();
+        //document.getElementById("date").innerHTML = today;
+            //document.getElementById("time").innerHTML = getTimeAMPM(date);
+/*let ongoing = []
+            for (let i = 0; i < events.length; i++) {
+                if (events[i]["start"] <= date) {
+                    ongoing.push(i)
+                }
+            } 
+            console.log(ongoing)
+
+            let diff = Math.abs(new Date(events[ongoing.length - 1]["end"]) - date);
+            let minutes = Math.floor((diff / 1000) / 60);
+            console.log("Minutes: " + minutes)
+
+            if (!minutes >= 30) {
+                document.getElementById("current").innerHTML = events[ongoing.length - 1]["name"];
+                document.getElementById("description").innerHTML = events[ongoing.length - 1]["description"];
+                document.getElementById("upcoming").innerHTML = events[ongoing.length]["name"] + " at " + getTimeAMPM(events[ongoing.length]["start"]);
+            }
+            else {
+                document.getElementById("current").innerHTML = "no event";
+                document.getElementById("description").innerHTML = "";
+                document.getElementById("upcoming").innerHTML = events[ongoing.length]["name"] + " at " + getTimeAMPM(events[ongoing.length]["start"]);
+            }
+
+            /*if (ongoing.length == 0) {
+                document.getElementById("current").innerHTML = "Keep on coding!";
+                document.getElementById("upcoming").innerHTML = "Keep on coding!";
+            }
+            else {
+                
+            }*/
+    </script>
+</body>
+</html>
